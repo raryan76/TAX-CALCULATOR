@@ -8,7 +8,7 @@ we make it just using -HTML,CSS,JAVA SCRIPT.
 
 ### Test Case 1: Valid Input
 
-![Test Case 1](valid-input.png)
+![Test Case 1](valid-input .png)
 
 *Description:* This test case checks the calculation of taxes using valid input values.
 - Input:
