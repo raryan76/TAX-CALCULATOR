@@ -27,7 +27,7 @@ we make it just using -HTML,CSS,JAVA SCRIPT.
   - Gross Annual Income: $100,000
   - Extra Income: $20,000
   - Age: "ABC" (Invalid input)
-  - Total Deductions: $8,000
+  - Total Deductions: 8,000
 - Expected Outcome: The tax calculator should display an error message for the invalid age input.
 
 ### Test Case 3: Boundary Conditions
