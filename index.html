@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <form id="taxForm">
+                <div class="form-group">
+                    <label for="grossAnnualIncome">Enter gross annual income</label>
+                    <input type="number" id="grossAnnualIncome" name="grossAnnualIncome" placeholder="Enter gross annual income" step="1000" min="10000" max="5000000" required>
+                </div>
+                <div class="form-group">
+                    <label for="dependents">Enter extra income</label>
+                    <input type="number" id="dependents" name="dependents" placeholder="Enter extra income from other sources" step="1" min="0" max="5000000" required>
+                </div>
+                <div class="form-group">
+                    <label for="yourAge">Enter age group</label>
+                    <input type="number" id="yourAge" name="yourAge" placeholder="" step="1" min="0" max="100" required>
+                </div>
+                <div class="form-group">
+                    <label for="totalDeductions">Enter total applicable deduction</label>
+                    <input type="number" id="totalDeductions" name="totalDeductions" placeholder="Add total applicable deduction" step="1" min="0" max="1000000" required>
+                </div>
+                <button type="submit" class="btn">SUBMIT</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById('taxForm');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); 
+
+                const grossIncome = document.getElementById('grossAnnualIncome').value;
+                const extraIncome = document.getElementById('dependents').value;
+                const age = document.getElementById('yourAge').value;
+                const deductions = document.getElementById('totalDeductions').value;
+
+                const overallIncome = TaxController.getOverallIncomeAfterTax(grossIncome, extraIncome, age, deductions);
+
+               
+                const resultContainer = document.createElement('div');
+                resultContainer.classList.add('result-container');
+                
+                
+                const resultText = document.createElement('div');
+                resultText.innerText = ` Your Overall income will be: ${overallIncome}`;
+                resultContainer.appendChild(resultText);
+                
+              
+                const closeButton = document.createElement('button');
+                closeButton.classList.add('close-button'); 
+                closeButton.innerText = 'Close';
+                closeButton.addEventListener('click', function() {
+                    resultContainer.remove();
+                });
+                
+                
+                resultContainer.appendChild(closeButton);
+
+               
+                document.body.appendChild(resultContainer);
+            });
+        });
+
+        const Constant = {
+            baseAmount: 800000,
+            percentageForLessThanForty: 0.3,
+            percentageForFortyAndSixty: 0.4,
+            percentageForAboveSixty: 0.1
+        };
+
+        class TaxCalculator {
+            calculateTax(grossIncome, extraIncome, deductions) {
+                throw new Error('calculateTax method must be implemented');
+            }
+        }
+
+        class TaxCalculatorLessThanForty extends TaxCalculator {
+            calculateTax(grossIncome, extraIncome, deductions) {
+                let income = grossIncome + extraIncome - deductions;
+                if (income <= Constant.baseAmount) {
+                    return income;
+                }
+                let tax = (income - Constant.baseAmount) * Constant.percentageForLessThanForty;
+                return income - tax;
+            }
+        }
+
+        class TaxCalculatorBetweenFortyAndSixty extends TaxCalculator {
+            calculateTax(grossIncome, extraIncome, deductions) {
+                let income = grossIncome + extraIncome - deductions;
+                if (income <= Constant.baseAmount) {
+                    return income;
+                }
+                let tax = (income - Constant.baseAmount) * Constant.percentageForFortyAndSixty;
+                return income - tax;
+            }
+        }
+
+        class TaxCalculatorAboveSixty extends TaxCalculator {
+            calculateTax(grossIncome, extraIncome, deductions) {
+                let income = grossIncome + extraIncome - deductions;
+                if (income <= Constant.baseAmount) {
+                    return income;
+                }
+                let tax = (income - Constant.baseAmount) * Constant.percentageForAboveSixty;
+                return income - tax;
+            }
+        }
+
+        class TaxCalculatorFactory {
+            static getObjectForTaxCalculator(age) {
+                if (age < 40) {
+                    return new TaxCalculatorLessThanForty();
+                } else if (age >= 40 && age < 60) {
+                    return new TaxCalculatorBetweenFortyAndSixty();
+                } else {
+                    return new TaxCalculatorAboveSixty();
+                }
+            }
+        }
+
+        class TaxController {
+            static getOverallIncomeAfterTax(grossIncome, extraIncome, age, deductions) {
+                let tax = TaxCalculatorFactory.getObjectForTaxCalculator(parseInt(age));
+                let income = tax.calculateTax(parseInt(grossIncome), parseInt(extraIncome), parseInt(deductions));
+                return income;
+            }
+        }
+    </script>
+</body>
+</html>
